@@ -25,9 +25,9 @@ What is Kickstart?
   Kickstart.nvim is *not* a distribution.
 
   Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
+   The goal is that you can read every line of code, top-to-bottom, understand
     what your configuration is doing, and modify it to suit your needs.
-
+ 
     Once you've done that, you can start exploring, configuring and tinkering to
     make Neovim your own! That might mean leaving Kickstart just the way it is for a while
     or immediately breaking it into modular pieces. It's up to you!
@@ -109,6 +109,9 @@ vim.opt.mouse = 'a'
 
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
+
+--
+vim.opt.maxmempattern = 10000
 
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
@@ -230,7 +233,6 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
@@ -270,7 +272,6 @@ require('lazy').setup({
   -- Then, because we use the `config` key, the configuration only runs
   -- after the plugin has been loaded:
   --  config = function() ... end
-
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
@@ -379,6 +380,9 @@ require('lazy').setup({
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
       require('telescope').setup {
+        defaults = {
+          file_ignore_patterns = { 'deps/*', 'node_modules/*', '%.git/*', '%_build/*' },
+        },
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
@@ -835,7 +839,6 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -855,6 +858,59 @@ require('lazy').setup({
       --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
       --  - ci'  - [C]hange [I]nside [']quote
       require('mini.ai').setup { n_lines = 500 }
+
+      require('nordic').setup {
+        -- This callback can be used to override the colors used in the base palette.
+        on_palette = function(palette) end,
+        -- This callback can be used to override the colors used in the extended palette.
+        after_palette = function(palette) end,
+        -- This callback can be used to override highlights before they are applied.
+        on_highlight = function(highlights, palette) end,
+        -- Enable bold keywords.
+        bold_keywords = false,
+        -- Enable italic comments.
+        italic_comments = true,
+        -- Enable editor background transparency.
+        transparent = {
+          -- Enable transparent background.
+          bg = false,
+          -- Enable transparent background for floating windows.
+          float = false,
+        },
+        -- Enable brighter float border.
+        bright_border = false,
+        -- Reduce the overall amount of blue in the theme (diverges from base Nord).
+        reduced_blue = true,
+        -- Swap the dark background with the normal one.
+        swap_backgrounds = false,
+        -- Cursorline options.  Also includes visual/selection.
+        cursorline = {
+          -- Bold font in cursorline.
+          bold = false,
+          -- Bold cursorline number.
+          bold_number = true,
+          -- Available styles: 'dark', 'light'.
+          theme = 'dark',
+          -- Blending the cursorline bg with the buffer bg.
+          blend = 0.85,
+        },
+        noice = {
+          -- Available styles: `classic`, `flat`.
+          style = 'classic',
+        },
+        telescope = {
+          -- Available styles: `classic`, `flat`.
+          style = 'flat',
+        },
+        leap = {
+          -- Dims the backdrop when using leap.
+          dim_backdrop = false,
+        },
+        ts_context = {
+          -- Enables dark background for treesitter-context window
+          dark_background = true,
+        },
+      }
 
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
@@ -930,6 +986,14 @@ require('lazy').setup({
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   -- { import = 'custom.plugins' },
+  {
+    'AlexvZyl/nordic.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require('nordic').load()
+    end,
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
