@@ -47,6 +47,8 @@ vim.keymap.set('n', '<leader>bd', '<cmd>bdelete<CR>', { desc = 'Close Current Bu
 
 -- Terminal workflow keymaps
 vim.keymap.set('n', '<leader>tt', '<cmd>terminal<CR>', { desc = 'Open Terminal' })
+vim.keymap.set('n', '<leader>tf', '<cmd>ToggleTerm direction=float<CR>', { desc = 'Toggle Float Terminal' })
+vim.keymap.set('n', '<leader>th', '<cmd>ToggleTerm direction=vertical<CR>', { desc = 'Toggle Vertical Terminal' })
 vim.keymap.set('n', '<leader>xx', '<cmd>!chmod +x %<CR>', { desc = 'Make Executable' })
 vim.keymap.set('n', '<leader>xp', '<cmd>!python %<CR>', { desc = 'Execute Python File' })
 vim.keymap.set('n', '<leader>xn', '<cmd>!node %<CR>', { desc = 'Execute Node.js File' })
@@ -76,6 +78,39 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- Core plugins
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+
+  -- Auto save
+  {
+    'Pocco81/auto-save.nvim',
+    config = function()
+      require('auto-save').setup {
+        enabled = true,
+        trigger_events = { 'InsertLeave', 'TextChanged' },
+        execution_message = {
+          message = function()
+            return 'Auto saved at ' .. vim.fn.strftime '%H:%M:%S'
+          end,
+          dim = 0.18,
+          cleaning_interval = 1250,
+        },
+        conditions = {
+          exists = true,
+          filename_is_not = {},
+          filetype_is_not = {},
+          modifiable = true,
+        },
+        write_all_buffers = false,
+        debounce_delay = 135,
+        callbacks = {
+          enabling = nil,
+          disabling = nil,
+          before_asserting_save = nil,
+          before_saving = nil,
+          after_saving = nil,
+        },
+      }
+    end,
+  },
 
   -- Git integration
   {
@@ -210,6 +245,20 @@ require('lazy').setup({
       view = {
         width = 30,
       },
+    },
+    filesystem_watchers = {
+      enable = true,
+    },
+    actions = {
+      open_file = {
+        resize_window = true,
+      },
+    },
+    renderer = {
+      group_empty = true,
+    },
+    modified = {
+      enable = true,
     },
   },
 
