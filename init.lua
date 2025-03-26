@@ -254,6 +254,17 @@ require('lazy').setup({
       { '<leader>e', '<cmd>NvimTreeToggle<CR>', desc = 'Toggle File Explorer' },
     },
     opts = {
+      update_focused_file = {
+        enable = true,
+        update_root = true,
+      },
+      renderer = {
+        group_empty = true,
+        root_folder_label = false,
+        indent_markers = {
+          enable = true,
+        },
+      },
       sort_by = 'case_sensitive',
       view = {
         width = 30,
