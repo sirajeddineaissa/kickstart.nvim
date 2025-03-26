@@ -43,7 +43,11 @@ vim.keymap.set('n', '<leader>bp', '<cmd>BufferLinePick<CR>', { desc = 'Buffer Pi
 vim.keymap.set('n', '<leader>bc', '<cmd>BufferLinePickClose<CR>', { desc = 'Buffer Pick Close' })
 vim.keymap.set('n', '<S-h>', '<cmd>BufferLineCyclePrev<CR>', { desc = 'Previous Buffer' })
 vim.keymap.set('n', '<S-l>', '<cmd>BufferLineCycleNext<CR>', { desc = 'Next Buffer' })
-vim.keymap.set('n', '<leader>bd', '<cmd>bdelete<CR>', { desc = 'Close Current Buffer' })
+vim.keymap.set('n', '<leader>bd', function()
+  local current_buf = vim.api.nvim_get_current_buf()
+  vim.cmd 'bp'
+  vim.cmd('bd' .. current_buf)
+end, { desc = 'Close Current Buffer' })
 
 -- Terminal workflow keymaps
 vim.keymap.set('n', '<leader>tt', '<cmd>terminal<CR>', { desc = 'Open Terminal' })
